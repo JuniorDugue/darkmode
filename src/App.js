@@ -1,16 +1,20 @@
-import React, { useState } from "react";
-import styled, { ThemeProvider } from "styled-components";
+import React, { useState, useEffect } from "react";
+import { ThemeProvider } from "styled-components";
+import { Button } from "./Button";
+import storage from "local-storage-fallback";
 import { GlobalStyle } from "./GlobalStyle";
 import "./styles.css";
 
-const Button = styled.button`
-  padding: 10px;
-  margin-top: 100px;
-  cursor: pointer;
-`;
+function getInitialTheme() {
+  const savedTheme = storage.getItem("theme");
+  return savedTheme ? JSON.parse(savedTheme) : { mode: "light" };
+}
 
 export default function App() {
-  const [theme, setTheme] = useState({ mode: "light" });
+  const [theme, setTheme] = useState(getInitialTheme);
+  useEffect(() => {
+    storage.setItem("theme", JSON.stringify(theme));
+  }, [theme]);
 
   return (
     <ThemeProvider theme={theme}>
